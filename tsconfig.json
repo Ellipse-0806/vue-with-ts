@@ -10,7 +10,7 @@
         "sourceMap": true,
         "isolatedModules": true,
         "experimentalDecorators": true,
-        // "typeRoots": ["./resources/ts/@types"],
+        "typeRoots": ["./resources/ts/@types"],
         "paths": {
             "~/*": ["./resources/ts/*"]
         }
