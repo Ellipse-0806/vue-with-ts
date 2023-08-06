@@ -29,8 +29,6 @@ Laravelフレームワーク上で、フロントエンドにVue composition api
 ```bash
 sudo apt update; \
 sudo apt install -y composer
-    # \
-    # php8.1-curl php8.1-xml
 ```
 
 ### laravelフレームワークのインストール
