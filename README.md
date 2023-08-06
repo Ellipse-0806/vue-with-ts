@@ -277,7 +277,7 @@ console.log("hello Vue!!");
 
 ```ts
 import { createApp } from 'vue';
-import welcome from '~/example/welcome.vue';
+import welcome from '~/welcome.vue';
 
 const id: number = 1;
 console.log(id);
