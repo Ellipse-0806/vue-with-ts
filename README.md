@@ -2,9 +2,6 @@
 
 Laravelフレームワーク上で、フロントエンドにVue composition api + Typescriptを使用する例
 
-## laravelフレームワークのセットアップ
-
-### 依存関係のインストール
 - [vue-with-ts](#vue-with-ts)
   - [laravelフレームワークのセットアップ](#laravelフレームワークのセットアップ)
     - [依存関係のインストール](#依存関係のインストール)
@@ -25,6 +22,10 @@ Laravelフレームワーク上で、フロントエンドにVue composition api
   - [おまけ](#おまけ)
     - [コンテナ名の変更](#コンテナ名の変更)
 
+****
+## laravelフレームワークのセットアップ
+
+### 依存関係のインストール
 ```bash
 sudo apt update; \
 sudo apt install -y composer
