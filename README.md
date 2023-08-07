@@ -479,6 +479,7 @@ module.exports = {
     testEnvironmentOptions: {
         customExportConditions: ["node", "node-addons"],    // nodeをテスト環境で使うように指定
     },
+    verbose: true,  // テストの詳細情報（名前）を表示するように変更
 }
 ```
 
