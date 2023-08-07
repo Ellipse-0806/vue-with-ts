@@ -376,7 +376,7 @@ Vueのテストライブラリとしてよく挙げられるjestを利用して�
 ### パッケージのインストール
 
 ```bash
-sail npm install --save-dev
+sail npm install --save-dev \
     jest \
     ts-jest \
     @vue/test-utils \
