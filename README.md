@@ -22,6 +22,10 @@ Laravelフレームワーク上で、フロントエンドにVue composition api
     - [TypeScript用の型定義の提供](#typescript用の型定義の提供)
     - [SFCを含めた型チェックが行えるライブラリの追加](#sfcを含めた型チェックが行えるライブラリの追加)
     - [vueファイルを実装してみる](#vueファイルを実装してみる)
+  - [Vueのテスト環境構築](#vueのテスト環境構築)
+    - [パッケージのインストール](#パッケージのインストール)
+    - [jestの設定](#jestの設定)
+    - [.vueファイルでテストを実行する](#vueファイルでテストを実行する)
   - [おまけ](#おまけ)
     - [コンテナ名の変更](#コンテナ名の変更)
 
@@ -297,7 +301,7 @@ sail npm install --save-dev vue-tsc
 ```
 
 2. package.jsonにコマンドを追加する
-3. 
+
 ```json
 "scripts": {
     "dev": "vite",
@@ -318,10 +322,10 @@ touch resources/ts/welcome.vue
 
 ```html
 <script setup lang="ts">
-console.log("hello Vue!!");
+const msg: string = "Hello Vue!!";
 </script>
 <template>
-    <div class="hello">Hello Vue!!</div>
+    <div class="hello">{{ msg }}</div>
 </template>
 <style>
 .hello {
@@ -365,6 +369,146 @@ sail npm run dev
 ```
 
 コンソールに **Hello Vue!!** の文字と、ページ上部に赤色の **Hello Vue!!** が表示されていればOK！
+
+## Vueのテスト環境構築
+Vueのテストライブラリとしてよく挙げられるjestを利用してテスト環境を構築する
+
+### パッケージのインストール
+
+```bash
+sail npm install --save-dev
+    jest \
+    ts-jest \
+    @vue/test-utils \
+    @vue/vue3-jest \
+    @types/jest \
+    jest-environment-jsdom
+```
+
+### jestの設定
+
+1. **jest.config.cjs**を作成し以下の内容を記述
+
+```bash
+touch jest.config.cjs
+```
+
+```cjs
+module.exports = {
+    preset: "ts-jest",
+    moduleFileExtensions: ["js", "json", "vue", "ts", "tsx"],
+    // v28以降は'jest-environment-jsdom'を指定する必要有
+    testEnvironment: 'jest-environment-jsdom',
+    transform: {
+        '.*\\.(vue)$': '@vue/vue3-jest',
+        '.*\\.(ts|tsx)$': 'ts-jest'
+    },
+    // エイリアスパス'@/'を理解できるよう定義
+    moduleNameMapper: {
+        '^@/(.*)$': '<rootDir>/resources/ts/$1'
+    },
+}
+```
+
+2. tsconfig.jsonにコンパイルオプションを追加
+
+```json
+{
+    "compilerOptions": {
+        // ...
+        "esModuleInterop": true, // CommonJSでのデフォルトインポート有効化
+    }
+}
+```
+
+3. package.jsonにコマンドを追加
+
+```json
+"scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "type:check": "vue-tsc --noEmit",
+    "test": "jest" // 追加
+},
+```
+
+4. テスト実行用のファイル作成
+
+```bash
+touch resources/ts/foo.ts
+touch resources/ts/foo.test.ts
+```
+
+- foo.ts
+
+```ts
+export const sum
+  = (...a: number[]) =>
+    a.reduce((acc, val) => acc + val, 0);
+```
+
+- foo.test.ts
+
+```ts
+import { sum } from '@/foo';
+
+test('basic', () => {
+    expect(sum()).toBe(0);
+});
+
+test('basic again', () => {
+    expect(sum(1, 2)).toBe(3);
+});
+```
+
+5. テストを実行する
+
+```bash
+sail npm run test
+```
+
+### .vueファイルでテストを実行する
+
+1. jest.config.cjsにテストオプションを追記
+
+
+```cjs
+// 定義しないと`ReferenceError: Vue is not defined`というエラーが発生する
+module.exports = {
+    // ...
+    testEnvironmentOptions: {
+        customExportConditions: ["node", "node-addons"],    // nodeをテスト環境で使うように指定
+    },
+}
+```
+
+1. テストファイルを作成
+
+```bash
+touch /resources/ts/welcome.spec.ts
+```
+
+- welcome.spec.tsの内容を以下の通りに変更
+
+```ts
+import { mount } from "@vue/test-utils";
+import welcomeVue from "./welcome.vue";
+
+describe('welcome.vue', () => {
+    it("renders the correct message", () => {
+        const wrapper = mount(welcomeVue);
+        expect(wrapper.text()).toBe('Hello Vue!!');
+    });
+});
+```
+
+3. テストの実行
+
+```bash
+sail npm run test
+```
+
+**resources/ts/welcome.spec.ts**がテストされていることを確認する
 
 ## おまけ
 
