@@ -1,8 +1,8 @@
 <script setup lang="ts">
-console.log("hello Vue!!");
+const msg: string = "Hello Vue!!";
 </script>
 <template>
-    <div class="hello">Hello Vue!!</div>
+    <div class="hello">{{ msg }}</div>
 </template>
 <style>
 .hello {
