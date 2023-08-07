@@ -3,8 +3,9 @@
 Laravelフレームワーク上で、フロントエンドにVue composition api + Typescriptを使用する例
 
 - [vue-with-ts](#vue-with-ts)
+  - [リポジトリをクローンして開始する場合](#リポジトリをクローンして開始する場合)
+    - [必要なパッケージのインストール](#必要なパッケージのインストール)
   - [laravelフレームワークのセットアップ](#laravelフレームワークのセットアップ)
-    - [依存関係のインストール](#依存関係のインストール)
     - [laravelフレームワークのインストール](#laravelフレームワークのインストール)
     - [コンテナの起動テスト](#コンテナの起動テスト)
     - [npmのセットアップ](#npmのセットアップ)
@@ -15,21 +16,55 @@ Laravelフレームワーク上で、フロントエンドにVue composition api
     - [viteの設定ファイル編集](#viteの設定ファイル編集)
     - [テスト実行](#テスト実行)
   - [Vueのセットアップ](#vueのセットアップ)
+    - [vueパッケージのインストール](#vueパッケージのインストール)
     - [vueプラグインのインストール](#vueプラグインのインストール)
     - [vite設定ファイルの編集](#vite設定ファイルの編集)
     - [TypeScript用の型定義の提供](#typescript用の型定義の提供)
+    - [SFCを含めた型チェックが行えるライブラリの追加](#sfcを含めた型チェックが行えるライブラリの追加)
     - [vueファイルを実装してみる](#vueファイルを実装してみる)
   - [おまけ](#おまけ)
     - [コンテナ名の変更](#コンテナ名の変更)
 
 ****
-## laravelフレームワークのセットアップ
 
-### 依存関係のインストール
+## リポジトリをクローンして開始する場合
+最初からセットアップを行う場合は、[こちら](#laravelフレームワークのセットアップ)から始めてください。
+
+### 必要なパッケージのインストール
+
+1. 依存関係のインストールに必要なパッケージをインストール
+
 ```bash
 sudo apt update; \
-sudo apt install -y composer
+sudo apt install composer php8.1-curl php8.1-xml
 ```
+
+2. 依存パッケージのインストール
+
+```bash
+composer install
+```
+
+3. **.env**ファイルの作成
+```bash
+cp -p .env.example .env
+```
+
+4. イメージのビルド
+
+```bash
+./vendor/bin/sail up -d
+```
+
+5. アプリケーションキーの生成
+
+```bash
+./vendor/bin/sail artisan key:generate
+```
+
+ここまで来たら、[こちら](#npmのセットアップ)からセットアップに復帰してください。
+
+## laravelフレームワークのセットアップ
 
 ### laravelフレームワークのインストール
 
@@ -100,8 +135,8 @@ touch tsconfig.json
 ```json
 {
     "compilerOptions": {
-        "target": "ES2022",
-        "module": "ES2022",
+        "target": "ESNext",
+        "module": "ESNext",
         "moduleResolution": "node",
         "baseUrl": ".",
         "strict": true,
@@ -110,9 +145,8 @@ touch tsconfig.json
         "sourceMap": true,
         "isolatedModules": true,
         "experimentalDecorators": true,
-        // "typeRoots": ["./resources/ts/@types"], // vueを使用する際に必要
         "paths": {
-            "~/*": ["./resources/ts/*"]
+            "@/*": ["./resources/ts/*"]
         }
     },
     "include": ["resources/ts/**/*"]
@@ -145,10 +179,10 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    // インポート時のパス設定（~/がresources/ts/に置き換えられる）
+    // インポート時のパス設定（@/がresources/ts/に置き換えられる）
     resolve: {
         alias: {
-            "~": path.resolve(__dirname, "resources/ts"),
+            "@": path.resolve(__dirname, "resources/ts"),
         },
     },
 });
@@ -178,6 +212,12 @@ sail npm run dev
 ## Vueのセットアップ
 
 [アセットの構築（Vite） --Vue](https://readouble.com/laravel/10.x/ja/vite.html#vue)
+
+### vueパッケージのインストール
+
+```bash
+sail npm install --save vue
+```
 
 ### vueプラグインのインストール
 
@@ -222,7 +262,7 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            "~": path.resolve(__dirname, "resources/ts"),
+            "@": path.resolve(__dirname, "resources/ts"),
         },
     },
 });
@@ -231,15 +271,14 @@ export default defineConfig({
 ### TypeScript用の型定義の提供
 .vueファイルをインポートする際に、型チェックでエラーが発生しないようにする
 
-1. **tsconfig.json**のTypeRootsのコメントアウトを外す
-2. 型定義ファイルを作成
+1. 型定義ファイルを作成
 
 ```bash
 mkdir resources/ts/@types
 touch resources/ts/@types/shims-vue.d.ts
 ```
 
-3. 型定義ファイルの内容を編集
+2. 型定義ファイルの内容を編集
 
 ```ts
 declare module "*.vue" {
@@ -247,6 +286,24 @@ declare module "*.vue" {
     const component: ReturnType<typeof defineComponent>;
     export default component;
 }
+```
+
+### SFCを含めた型チェックが行えるライブラリの追加
+
+1. vue-tscを開発用ライブラリとしてインストール
+
+```bash
+sail npm install --save-dev vue-tsc
+```
+
+2. package.jsonにコマンドを追加する
+3. 
+```json
+"scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "type:check": "vue-tsc --noEmit" // 追加
+},
 ```
 
 ### vueファイルを実装してみる
@@ -277,7 +334,7 @@ console.log("hello Vue!!");
 
 ```ts
 import { createApp } from 'vue';
-import welcome from '~/welcome.vue';
+import welcome from '@/welcome.vue';
 
 const id: number = 1;
 console.log(id);
@@ -295,7 +352,13 @@ app.mount('#app');
 </body>
 ```
 
-5. 開発モードでコンパイルを実行する
+5. 型チェックを行う
+
+```bash
+sail npm run type:check
+```
+
+6. 開発モードでコンパイルを実行する
 
 ```bash
 sail npm run dev
