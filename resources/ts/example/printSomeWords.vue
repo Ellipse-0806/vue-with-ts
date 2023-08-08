@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getSomeWords } from './services/getSomeWords';
+import { getSomeWords } from '@/example/getSomeWords';
 
 const response = await getSomeWords({word: "Hi !"});
 </script>

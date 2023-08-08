@@ -1,5 +1,5 @@
 import { mount } from "@vue/test-utils";
-import welcomeVue from "./welcome.vue";
+import welcomeVue from "@/example/welcome.vue";
 
 describe('welcome.vue', () => {
     it("renders the correct message", () => {

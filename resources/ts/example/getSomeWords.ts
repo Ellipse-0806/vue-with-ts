@@ -1,7 +1,7 @@
 import { ref } from "vue";
-import { ApiClient } from "./apiClient";
+import { ApiClient } from "@/services/apiClient";
 import { ApiResponse } from "@/types/api";
-import { SomeWords } from "@/types/someWords";
+import { SomeWords } from "@/types/example/someWords";
 
 export const getSomeWords = async(params: Object) => {
     const api = new ApiClient();
