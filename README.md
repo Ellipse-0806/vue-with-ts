@@ -371,7 +371,9 @@ sail npm run dev
 コンソールに **Hello Vue!!** の文字と、ページ上部に赤色の **Hello Vue!!** が表示されていればOK！
 
 ## Vueのテスト環境構築
-Vueのテストライブラリとしてよく挙げられるjestを利用してテスト環境を構築する
+Vueのテストライブラリを使用するにあたって推奨されている**jest**を利用できるよう環境構築を行う
+
+[Vue Test Utils](https://test-utils.vuejs.org/)
 
 ### パッケージのインストール
 
