@@ -16,3 +16,18 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/mpa/{any?}', function ($any = null) {
+    switch($any) {
+        case 'home':
+            return view('home');
+        case 'mypage':
+            return view('mypage');
+        default:
+            return view('welcome');
+    }
+});
+
+Route::get('/spa/{any?}', function () {
+    return view('spa');
+});
