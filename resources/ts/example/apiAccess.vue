@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import printSOmeWords from "@/printSomeWords.vue";
+import printSOmeWords from "@/example/printSomeWords.vue";
 
 const someWords = printSOmeWords;
 </script>

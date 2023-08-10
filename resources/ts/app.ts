@@ -1,10 +1,7 @@
-import { createApp } from 'vue';
-import welcome from '@/welcome.vue';
-import apiAccess from '@/apiAccess.vue';
+import { createApp } from "vue";
+import router from "@/router/router";
+import baseApp from "@/base/App.vue";
 
-const id: number = 1;
-console.log(id);
-
-// const app = createApp(welcome);
-const app = createApp(apiAccess);
+const app = createApp(baseApp);
+app.use(router);
 app.mount('#app');
